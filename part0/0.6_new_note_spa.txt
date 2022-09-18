@@ -1,0 +1,16 @@
+note over browser:
+user writes something into the text field
+and clicks the submit button
+end note
+
+note over browser:
+browser renders the new note to display
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server:
+add new note
+end note
+
+server-->browser: HTTP status code 201

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { create, del, getAll, update } from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -8,25 +8,33 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
+    getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
 
-  const addNewName = (event) => {
+  const addNewName = async (event) => {
     event.preventDefault();
     if (newName === '') return;
 
-    if (persons.some((person) => person.name === newName))
-      return alert(`${newName} is already added to phonebook`);
+    const existingPerson = persons.find((person) => person.name === newName);
 
-    setPersons((prevPersons) =>
-      prevPersons.concat({
-        id: prevPersons.length + 1,
-        name: newName,
-        number: newNumber,
-      })
-    );
+    if (existingPerson) {
+      if (
+        window.confirm(
+          `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        const res = await update({ ...existingPerson, number: newNumber });
+        setPersons((prevPersons) =>
+          prevPersons.map((p) => (p.id !== existingPerson.id ? p : res.data))
+        );
+      }
+    } else {
+      const res = await create({ name: newName, number: newNumber });
+      setPersons((prevPersons) => prevPersons.concat(res.data));
+    }
+
     setNewName('');
     setNewNumber('');
   };
@@ -44,7 +52,7 @@ const App = () => {
         setNewNumber={setNewNumber}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} setPersons={setPersons} />
     </div>
   );
 };
@@ -86,8 +94,14 @@ const PersonForm = ({
   </form>
 );
 
-const Persons = ({ persons, filter }) =>
-  persons
+const Persons = ({ persons, filter, setPersons }) => {
+  const deletePerson = (person) => async () => {
+    if (!window.confirm(`Delete ${person.name}?`)) return;
+    await del(person.id);
+    setPersons((prevPersons) => prevPersons.filter((p) => p.id !== person.id));
+  };
+
+  return persons
     .filter(
       (person) =>
         filter === '' ||
@@ -95,6 +109,8 @@ const Persons = ({ persons, filter }) =>
     )
     .map((person) => (
       <div key={person.id}>
-        {person.name} {person.number}
+        {person.name} {person.number}{' '}
+        <button onClick={deletePerson(person)}>delete</button>
       </div>
     ));
+};

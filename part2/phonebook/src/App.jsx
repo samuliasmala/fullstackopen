@@ -6,12 +6,23 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [notification, setNotification] = useState(null);
+  const [notificationType, setNotificationType] = useState(null);
 
   useEffect(() => {
     getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
+
+  const displayNotification = (message, type = 'notification') => {
+    setNotification(message);
+    setNotificationType(type);
+    setTimeout(() => {
+      setNotification(null);
+      setNotificationType(null);
+    }, 5000);
+  };
 
   const addNewName = async (event) => {
     event.preventDefault();
@@ -25,14 +36,26 @@ const App = () => {
           `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
-        const res = await update({ ...existingPerson, number: newNumber });
-        setPersons((prevPersons) =>
-          prevPersons.map((p) => (p.id !== existingPerson.id ? p : res.data))
-        );
+        try {
+          const res = await update({ ...existingPerson, number: newNumber });
+          setPersons((prevPersons) =>
+            prevPersons.map((p) => (p.id !== existingPerson.id ? p : res.data))
+          );
+          displayNotification(`${existingPerson.name} phone number updated`);
+        } catch (error) {
+          displayNotification(
+            `Information of ${existingPerson.name} has already been removed from server`,
+            'error'
+          );
+          setPersons((prevPersons) =>
+            prevPersons.filter((p) => p.id !== existingPerson.id)
+          );
+        }
       }
     } else {
       const res = await create({ name: newName, number: newNumber });
       setPersons((prevPersons) => prevPersons.concat(res.data));
+      displayNotification(`Added ${res.data.name}`);
     }
 
     setNewName('');
@@ -42,6 +65,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={notification} type={notificationType} />
       <Filter filter={filter} setFilter={setFilter} />
       <h2>add a new</h2>
       <PersonForm
@@ -113,4 +137,12 @@ const Persons = ({ persons, filter, setPersons }) => {
         <button onClick={deletePerson(person)}>delete</button>
       </div>
     ));
+};
+
+const Notification = ({ message, type }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className={`notification-box ${type}`}>{message}</div>;
 };

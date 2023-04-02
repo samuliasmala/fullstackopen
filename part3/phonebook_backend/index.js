@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -24,8 +24,32 @@ const persons = [
   },
 ];
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+app.use(express.json());
+
 app.get("/api/persons", (req, res) => {
   res.json(persons);
+});
+
+app.post("/api/persons", (req, res) => {
+  const { name, number } = req.body;
+
+  if (!name) return res.status(400).json({ error: "name is missing" });
+  if (!number) return res.status(400).json({ error: "number is missing" });
+  if (persons.some((p) => p.name === name))
+    return res.status(400).json({ error: "name must be unique" });
+
+  const person = {
+    name,
+    number,
+    id: getRandomInt(1000000000),
+  };
+
+  persons = persons.concat(person);
+  res.json(person);
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -33,6 +57,12 @@ app.get("/api/persons/:id", (req, res) => {
   const person = persons.find((p) => p.id === id);
   if (!person) return res.status(404).end();
   res.json(person);
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  persons = persons.filter((p) => p.id !== id);
+  res.status(204).end();
 });
 
 app.get("/info", (req, res) => {

@@ -79,7 +79,7 @@ app.get('/info', (req, res) => {
             <p>${new Date().toString()}</p>`);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Test API: http://localhost:${PORT}/api/persons`);

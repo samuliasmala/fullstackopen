@@ -38,7 +38,7 @@ const tinyWithBody =
 
 app.use(express.json());
 app.use(morgan(tinyWithBody));
-app.use(express.static('dist'))
+app.use(express.static('dist'));
 
 app.get('/api/persons', (req, res) => {
   res.json(persons);
@@ -80,8 +80,11 @@ app.get('/info', (req, res) => {
             <p>${new Date().toString()}</p>`);
 });
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Test API: http://localhost:${PORT}/api/persons`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Test frontend: http://localhost:${PORT}`);
+    console.log(`Test API: http://localhost:${PORT}/api/persons`);
+  }
 });

@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 
 let persons = [
   {
@@ -28,7 +29,15 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+morgan.token("body", (req, res) =>
+  req.method === "POST" ? JSON.stringify(req.body) : null
+);
+
+const tinyWithBody =
+  ":method :url :status :res[content-length] - :response-time ms :body";
+
 app.use(express.json());
+app.use(morgan(tinyWithBody));
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);

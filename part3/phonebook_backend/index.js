@@ -38,6 +38,7 @@ const tinyWithBody =
 
 app.use(express.json());
 app.use(morgan(tinyWithBody));
+app.use(express.static('dist'))
 
 app.get('/api/persons', (req, res) => {
   res.json(persons);

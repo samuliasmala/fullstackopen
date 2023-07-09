@@ -63,7 +63,7 @@ app.put('/api/persons/:id', async (req, res, next) => {
     const updatedPerson = await Person.findByIdAndUpdate(
       req.params.id,
       person,
-      { new: true }
+      { new: true, runValidators: true, context: 'query' }
     );
 
     return res.json(updatedPerson);
@@ -96,6 +96,8 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === 'CastError')
     return res.status(400).send({ error: 'malformatted id' });
+  else if (err.name === 'ValidationError')
+    return res.status(400).json({ error: err.message });
 
   next(err);
 };

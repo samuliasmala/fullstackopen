@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { create, del, getAll, update } from './services/persons';
 
 const App = () => {
@@ -8,6 +8,7 @@ const App = () => {
   const [filter, setFilter] = useState('');
   const [notification, setNotification] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
+  const timer = useRef(null);
 
   useEffect(() => {
     getAll().then((response) => {
@@ -16,9 +17,10 @@ const App = () => {
   }, []);
 
   const displayNotification = (message, type = 'notification') => {
+    if (timer.current) clearInterval(timer.current);
     setNotification(message);
     setNotificationType(type);
-    setTimeout(() => {
+    timer.current = setTimeout(() => {
       setNotification(null);
       setNotificationType(null);
     }, 5000);
@@ -53,9 +55,13 @@ const App = () => {
         }
       }
     } else {
-      const res = await create({ name: newName, number: newNumber });
-      setPersons((prevPersons) => prevPersons.concat(res.data));
-      displayNotification(`Added ${res.data.name}`);
+      try {
+        const res = await create({ name: newName, number: newNumber });
+        setPersons((prevPersons) => prevPersons.concat(res.data));
+        displayNotification(`Added ${res.data.name}`);
+      } catch (err) {
+        displayNotification(err.response.data.error, 'error');
+      }
     }
 
     setNewName('');

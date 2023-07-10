@@ -39,6 +39,13 @@ const initialBlogs = [
   },
 ];
 
+const newBlog = {
+  title: 'TypeScript and React',
+  author: 'Stefan Baumgartner',
+  url: 'https://fettblog.eu/typescript-react/',
+  likes: 9,
+};
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon' });
   await blog.save();
@@ -54,6 +61,7 @@ const blogsInDb = async () => {
 
 module.exports = {
   initialBlogs,
+  newBlog,
   nonExistingId,
   blogsInDb,
 };

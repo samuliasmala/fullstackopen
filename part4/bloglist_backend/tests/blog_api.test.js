@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
-const { initialBlogs } = require('./test_helper');
+const { initialBlogs, newBlog } = require('./test_helper');
 
 const api = supertest(app);
 
@@ -26,6 +26,20 @@ test('all blogs are returned', async () => {
 test('all blogs have id field', async () => {
   const res = await api.get('/api/blogs');
   res.body.forEach((blog) => expect(blog.id).toBeDefined());
+});
+
+test('can add a new blog', async () => {
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const res = await api.get('/api/blogs');
+  const titles = res.body.map((r) => r.title);
+
+  expect(res.body).toHaveLength(initialBlogs.length + 1);
+  expect(titles).toContain(newBlog.title);
 });
 
 afterAll(async () => {

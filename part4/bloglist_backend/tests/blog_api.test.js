@@ -75,6 +75,18 @@ test('can delete a blog', async () => {
   expect(titles).not.toContain(blogToDelete.title);
 });
 
+test('can update like count', async () => {
+  const blogToUpdate = (await api.get('/api/blogs')).body[0];
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send({ ...blogToUpdate, likes: 99 })
+    .expect(200);
+
+  const res = await api.get('/api/blogs');
+  const blog = res.body.find((blog) => blog.title === blogToUpdate.title);
+  expect(blog.likes).toBe(99);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

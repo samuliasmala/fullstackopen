@@ -51,6 +51,20 @@ test('default likes is 0 for new blogs', async () => {
   expect(res.body.likes).toBe(0);
 });
 
+test('a new blog requires title and url', async () => {
+  await api
+    .post('/api/blogs')
+    .send({ ...newBlog, title: undefined })
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  await api
+    .post('/api/blogs')
+    .send({ ...newBlog, url: undefined })
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

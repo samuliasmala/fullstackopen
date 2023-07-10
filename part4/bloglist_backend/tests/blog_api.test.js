@@ -65,6 +65,16 @@ test('a new blog requires title and url', async () => {
     .expect('Content-Type', /application\/json/);
 });
 
+test('can delete a blog', async () => {
+  const blogToDelete = (await api.get('/api/blogs')).body[0];
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const res = await api.get('/api/blogs');
+  const titles = res.body.map((r) => r.title);
+  expect(res.body).toHaveLength(initialBlogs.length - 1);
+  expect(titles).not.toContain(blogToDelete.title);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

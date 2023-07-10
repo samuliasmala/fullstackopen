@@ -8,7 +8,9 @@ morgan.token('body', (req) =>
 const tinyWithBody =
   ':method :url :status :res[content-length] - :response-time ms :body';
 
-const requestLogger = morgan(tinyWithBody);
+const requestLogger = morgan(tinyWithBody, {
+  skip: () => process.env.NODE_ENV === 'test',
+});
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });

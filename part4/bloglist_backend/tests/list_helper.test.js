@@ -1,4 +1,4 @@
-const { totalLikes, favoriteBlog } = require('../utils/list_helper');
+const { totalLikes, favoriteBlog, mostBlogs } = require('../utils/list_helper');
 
 const listWithOneBlog = [
   {
@@ -89,6 +89,24 @@ describe('favorite blog', () => {
       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
       likes: 12,
       __v: 0,
+    });
+  });
+});
+
+describe('most blogs', () => {
+  test('of empty list is null', () => {
+    expect(mostBlogs([])).toBe(null);
+  });
+  test('when list has only one blog equals author of that', () => {
+    expect(mostBlogs(listWithOneBlog)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      blogs: 1,
+    });
+  });
+  test('of bigger list is right', () => {
+    expect(mostBlogs(blogs)).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3,
     });
   });
 });

@@ -44,14 +44,22 @@ const App = () => {
             prevPersons.map((p) => (p.id !== existingPerson.id ? p : res.data))
           );
           displayNotification(`${existingPerson.name} phone number updated`);
-        } catch (error) {
-          displayNotification(
-            `Information of ${existingPerson.name} has already been removed from server`,
-            'error'
-          );
-          setPersons((prevPersons) =>
-            prevPersons.filter((p) => p.id !== existingPerson.id)
-          );
+        } catch (err) {
+          if (err.response?.status === 404) {
+            displayNotification(
+              `Information of ${existingPerson.name} has already been removed from server`,
+              'error'
+            );
+            setPersons((prevPersons) =>
+              prevPersons.filter((p) => p.id !== existingPerson.id)
+            );
+          } else {
+            displayNotification(
+              err.response?.data?.error || 'Unknown error',
+              'error'
+            );
+            return;
+          }
         }
       }
     } else {
@@ -60,7 +68,11 @@ const App = () => {
         setPersons((prevPersons) => prevPersons.concat(res.data));
         displayNotification(`Added ${res.data.name}`);
       } catch (err) {
-        displayNotification(err.response.data.error, 'error');
+        displayNotification(
+          err.response?.data?.error || 'Unknown error',
+          'error'
+        );
+        return;
       }
     }
 

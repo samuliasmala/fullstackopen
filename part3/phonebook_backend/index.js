@@ -66,6 +66,8 @@ app.put('/api/persons/:id', async (req, res, next) => {
       { new: true, runValidators: true, context: 'query' }
     );
 
+    if (!updatedPerson) return res.status(404).end();
+
     return res.json(updatedPerson);
   } catch (err) {
     next(err);

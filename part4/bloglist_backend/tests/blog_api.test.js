@@ -42,6 +42,15 @@ test('can add a new blog', async () => {
   expect(titles).toContain(newBlog.title);
 });
 
+test('default likes is 0 for new blogs', async () => {
+  const res = await api
+    .post('/api/blogs')
+    .send({ ...newBlog, likes: undefined })
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+  expect(res.body.likes).toBe(0);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

@@ -8,6 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../phonebook_frontend && npm run build && cp -r dist ../phonebook_backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild",
+    "lint": "eslint .",
     "prettier": "prettier -w . '!dist'"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.44.0",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.7"
   },

@@ -4,7 +4,7 @@ const app = express();
 const morgan = require('morgan');
 const Person = require('./models/person');
 
-morgan.token('body', (req, res) =>
+morgan.token('body', (req) =>
   req.method === 'POST' ? JSON.stringify(req.body) : null
 );
 

@@ -11,3 +11,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc
     "url": "https://dev.to/martinp/build-a-blog-using-nextjs-and-devto-15a5",
     "likes": 7
 }
+
+###
+DELETE http://localhost:3003/api/blogs/64adc29f7f019d4badf9881e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY0YWRjMjhlN2YwMTlkNGJhZGY5ODgxMyIsImlhdCI6MTY4OTE1MTU2NH0.QL216p1cBq5guAAhzOFkVRKnpanopeVpI0-HgS3DReU

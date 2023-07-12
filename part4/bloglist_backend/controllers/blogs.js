@@ -50,7 +50,19 @@ blogsRouter.put('/:id', async (req, res) => {
 });
 
 blogsRouter.delete('/:id', async (req, res) => {
-  await Blog.findByIdAndRemove(req.params.id);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'token invalid' });
+  }
+  const user = await User.findById(decodedToken.id);
+  const blog = await Blog.findById(req.params.id);
+
+  if (!blog) return res.status(204).end();
+
+  if (blog.user.toString() !== user._id.toString())
+    return res.status(401).json({ error: 'can only remove own blogs' });
+
+  await blog.deleteOne();
   return res.status(204).end();
 });
 

@@ -8,11 +8,13 @@ const { initialBlogs, newBlog, rootUser } = require('./test_helper');
 const api = supertest(app);
 
 let token;
+let userId;
 
 beforeAll(async () => {
   await User.deleteMany({});
   const user = new User(rootUser);
   await user.save();
+  userId = user._id;
   const res = await api
     .post('/api/login')
     .send({ username: rootUser.username, password: 'sekret' });
@@ -21,7 +23,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  await Blog.insertMany(initialBlogs);
+  await Blog.insertMany(initialBlogs.map((b) => ({ ...b, user: userId })));
 });
 
 test('blogs are returned as json', async () => {
@@ -82,7 +84,10 @@ test('a new blog requires title and url', async () => {
 
 test('can delete a blog', async () => {
   const blogToDelete = (await api.get('/api/blogs')).body[0];
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .set('Authorization', 'Bearer ' + token)
+    .expect(204);
 
   const res = await api.get('/api/blogs');
   const titles = res.body.map((r) => r.title);

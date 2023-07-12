@@ -58,6 +58,17 @@ test('can add a new blog', async () => {
   expect(titles).toContain(newBlog.title);
 });
 
+test('cannot add a new blog without auth header', async () => {
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/);
+
+  const res = await api.get('/api/blogs');
+  expect(res.body).toHaveLength(initialBlogs.length);
+});
+
 test('default likes is 0 for new blogs', async () => {
   const res = await api
     .post('/api/blogs')

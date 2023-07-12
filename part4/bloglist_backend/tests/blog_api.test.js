@@ -2,9 +2,22 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
-const { initialBlogs, newBlog } = require('./test_helper');
+const User = require('../models/user');
+const { initialBlogs, newBlog, rootUser } = require('./test_helper');
 
 const api = supertest(app);
+
+let token;
+
+beforeAll(async () => {
+  await User.deleteMany({});
+  const user = new User(rootUser);
+  await user.save();
+  const res = await api
+    .post('/api/login')
+    .send({ username: rootUser.username, password: 'sekret' });
+  token = res.body.token;
+});
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -31,6 +44,7 @@ test('all blogs have id field', async () => {
 test('can add a new blog', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/);
@@ -45,6 +59,7 @@ test('can add a new blog', async () => {
 test('default likes is 0 for new blogs', async () => {
   const res = await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send({ ...newBlog, likes: undefined })
     .expect(201)
     .expect('Content-Type', /application\/json/);

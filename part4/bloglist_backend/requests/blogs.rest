@@ -1,8 +1,9 @@
 GET http://localhost:3003/api/blogs
 
 ###
-POST http://localhost:3003/api/blogs/ HTTP/1.1
-content-type: application/json
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjY0YWRjMjhlN2YwMTlkNGJhZGY5ODgxMyIsImlhdCI6MTY4OTE1MDIzN30.VoQ0znrWVxKGK4R7_baFZ4uk4Dne8QSsKwAs-rZ200Y
 
 {
     "title": "Build a Blog using Next.JS and DEV.to",

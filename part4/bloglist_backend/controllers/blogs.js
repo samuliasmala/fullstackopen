@@ -1,7 +1,5 @@
 const blogsRouter = require('express').Router();
-const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
-const User = require('../models/user');
 
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({}).populate('user', {
@@ -16,15 +14,8 @@ blogsRouter.post('/', async (req, res) => {
   if (req.body.title === undefined || req.body.url === undefined)
     return res.status(400).json({ error: 'title and url are required' });
 
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return res.status(401).json({ error: 'token invalid' });
-  }
-  const user = await User.findById(decodedToken.id);
-
-  if (!user) {
-    return res.status(400).json({ error: 'user not found' });
-  }
+  const { user } = req;
+  if (!user) return res.status(401).json({ error: 'authentication required' });
 
   const blog = new Blog({ likes: 0, user: user.id, ...req.body });
   const savedBlog = await blog.save();
@@ -50,11 +41,8 @@ blogsRouter.put('/:id', async (req, res) => {
 });
 
 blogsRouter.delete('/:id', async (req, res) => {
-  const decodedToken = jwt.verify(req.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return res.status(401).json({ error: 'token invalid' });
-  }
-  const user = await User.findById(decodedToken.id);
+  const { user } = req;
+  if (!user) return res.status(401).json({ error: 'authentication required' });
   const blog = await Blog.findById(req.params.id);
 
   if (!blog) return res.status(204).end();

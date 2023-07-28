@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
 
 const blog = {
@@ -32,5 +33,17 @@ describe('<Blog />', () => {
     expect(screen.getByText(blog.title, { exact: false })).toBeDefined();
     expect(screen.getByText(blog.author, { exact: false })).toBeDefined();
     expect(screen.queryByText(blog.url, { exact: false })).toBeNull();
+  });
+
+  test('all information shown after view button clicked', async () => {
+    const user = userEvent.setup();
+    const button = screen.getByText('view');
+    await user.click(button);
+
+    expect(screen.getByText(blog.title, { exact: false })).toBeDefined();
+    expect(screen.getByText(blog.author, { exact: false })).toBeDefined();
+    expect(screen.getByText(blog.url)).toBeDefined();
+    expect(screen.getByText(`likes ${blog.likes}`)).toBeDefined();
+    expect(screen.getByText(blog.user.name)).toBeDefined();
   });
 });

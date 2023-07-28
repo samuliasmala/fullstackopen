@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import blogService from '../services/blogs';
 
-export const NewBlogForm = ({ setBlogs, setVisible, displayNotification }) => {
+export const NewBlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -10,22 +9,12 @@ export const NewBlogForm = ({ setBlogs, setVisible, displayNotification }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const blog = await blogService.create({
-        title,
-        author,
-        url,
-      });
-      // Returned blog object doesn't contain user information -> reload all blogs
-      const blogs = await blogService.getAll();
-      setBlogs(blogs);
+      await createBlog({ title, author, url });
       setTitle('');
       setAuthor('');
       setUrl('');
-      setVisible(false);
-      displayNotification(`a new blog ${blog.title} by ${blog.author} added`);
-    } catch (exception) {
+    } catch (err) {
       console.log('Error creating a new blog post');
-      displayNotification('error creating a new blog post', 'error');
     }
   };
 
@@ -67,7 +56,5 @@ export const NewBlogForm = ({ setBlogs, setVisible, displayNotification }) => {
 };
 
 NewBlogForm.propTypes = {
-  setBlogs: PropTypes.func.isRequired,
-  setVisible: PropTypes.func.isRequired,
-  displayNotification: PropTypes.func.isRequired,
+  createBlog: PropTypes.func.isRequired,
 };

@@ -30,6 +30,20 @@ const App = () => {
     setUser(null);
   };
 
+  const createBlog = async (blogData) => {
+    try {
+      const blog = await blogService.create(blogData);
+      // Returned blog object doesn't contain user information -> reload all blogs
+      const blogs = await blogService.getAll();
+      setBlogs(blogs);
+      setShowNewBlogForm(false);
+      displayNotification(`a new blog ${blog.title} by ${blog.author} added`);
+    } catch (err) {
+      displayNotification('error creating a new blog post', 'error');
+      throw err;
+    }
+  };
+
   const increaseLikes = async (blog) => {
     // Update backend
     const updatedBlog = await blogService.update({
@@ -71,11 +85,7 @@ const App = () => {
         setVisible={setShowNewBlogForm}
         buttonLabel="add blog"
       >
-        <NewBlogForm
-          setBlogs={setBlogs}
-          setVisible={setShowNewBlogForm}
-          displayNotification={displayNotification}
-        />
+        <NewBlogForm createBlog={createBlog} />
       </Togglable>
 
       {blogs

@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 export const Togglable = ({ visible, setVisible, buttonLabel, children }) => {
   const toggleVisibility = () => setVisible((visible) => !visible);
 
@@ -13,4 +15,11 @@ export const Togglable = ({ visible, setVisible, buttonLabel, children }) => {
       )}
     </div>
   );
+};
+
+Togglable.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  setVisible: PropTypes.func.isRequired,
+  buttonLabel: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
 };

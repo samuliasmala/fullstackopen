@@ -14,7 +14,9 @@ export const NewBlogForm = ({ setBlogs, setVisible, displayNotification }) => {
         author,
         url,
       });
-      setBlogs((blogs) => [...blogs, blog]);
+      // Returned blog object doesn't contain user information -> reload all blogs
+      const blogs = await blogService.getAll();
+      setBlogs(blogs);
       setTitle('');
       setAuthor('');
       setUrl('');

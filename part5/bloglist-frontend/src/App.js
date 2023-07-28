@@ -30,6 +30,22 @@ const App = () => {
     setUser(null);
   };
 
+  const increaseLikes = async (blog) => {
+    // Update backend
+    const updatedBlog = await blogService.update({
+      ...blog,
+      user: blog.user._id,
+      likes: blog.likes + 1,
+    });
+
+    // Update frontend
+    setBlogs((blogs) =>
+      blogs.map((b) =>
+        b.id === updatedBlog.id ? { ...b, likes: updatedBlog.likes } : b,
+      ),
+    );
+  };
+
   if (user === null) return <LoginForm setUser={setUser} />;
 
   return (
@@ -52,7 +68,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} increaseLikes={increaseLikes} />
       ))}
     </div>
   );

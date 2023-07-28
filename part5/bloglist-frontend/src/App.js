@@ -46,6 +46,17 @@ const App = () => {
     );
   };
 
+  const deleteBlog = async (blog) => {
+    if (!window.confirm(`Remove blog ${blog.title} by ${blog.author}?`))
+      return false;
+
+    // Update backend
+    await blogService.del(blog.id);
+
+    // Update frontend
+    setBlogs((blogs) => blogs.filter((b) => b.id !== blog.id));
+  };
+
   if (user === null) return <LoginForm setUser={setUser} />;
 
   return (
@@ -70,7 +81,13 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
-          <Blog key={blog.id} blog={blog} increaseLikes={increaseLikes} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            increaseLikes={increaseLikes}
+            deleteBlog={deleteBlog}
+            isOwnBlog={user.username === blog.user.username}
+          />
         ))}
     </div>
   );

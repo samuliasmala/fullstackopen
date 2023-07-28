@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Blog = ({ blog, increaseLikes }) => {
+const Blog = ({ blog, increaseLikes, isOwnBlog, deleteBlog }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const blogStyle = {
@@ -11,6 +11,8 @@ const Blog = ({ blog, increaseLikes }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const deleteBtnStyle = { backgroundColor: 'red', color: 'white' };
 
   return (
     <div style={blogStyle}>
@@ -25,6 +27,11 @@ const Blog = ({ blog, increaseLikes }) => {
               <button onClick={() => increaseLikes(blog)}>like</button>
             </div>
             <div>{blog.user?.name}</div>
+            {isOwnBlog && (
+              <button style={deleteBtnStyle} onClick={() => deleteBlog(blog)}>
+                delete
+              </button>
+            )}
           </>
         ) : (
           <button onClick={() => setIsOpen(true)}>view</button>

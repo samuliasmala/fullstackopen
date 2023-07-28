@@ -17,12 +17,14 @@ const blog = {
   id: '64ae634bb8d3dd9fc8448242',
 };
 
+const increaseLikesMock = jest.fn();
+
 describe('<Blog />', () => {
   beforeEach(() => {
     render(
       <Blog
         blog={blog}
-        increaseLikes={jest.fn()}
+        increaseLikes={increaseLikesMock}
         isOwnBlog={true}
         deleteBlog={jest.fn()}
       />,
@@ -45,5 +47,14 @@ describe('<Blog />', () => {
     expect(screen.getByText(blog.url)).toBeDefined();
     expect(screen.getByText(`likes ${blog.likes}`)).toBeDefined();
     expect(screen.getByText(blog.user.name)).toBeDefined();
+  });
+
+  test('clicking like-button twice calls event handler twice', async () => {
+    const user = userEvent.setup();
+    await user.click(screen.getByText('view'));
+    await user.click(screen.getByText('like'));
+    await user.click(screen.getByText('like'));
+
+    expect(increaseLikesMock.mock.calls).toHaveLength(2);
   });
 });

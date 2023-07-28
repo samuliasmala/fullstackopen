@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
-import { useNotification } from './Notification';
 
-export const NewBlogForm = ({ setBlogs }) => {
+export const NewBlogForm = ({ setBlogs, setVisible, displayNotification }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
-  const { displayNotification, Notification } = useNotification();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,6 +18,7 @@ export const NewBlogForm = ({ setBlogs }) => {
       setTitle('');
       setAuthor('');
       setUrl('');
+      setVisible(false);
       displayNotification(`a new blog ${blog.title} by ${blog.author} added`);
     } catch (exception) {
       console.log('Error creating a new blog post');
@@ -30,7 +29,6 @@ export const NewBlogForm = ({ setBlogs }) => {
   return (
     <div>
       <h2>create a new blog</h2>
-      <Notification />
       <form onSubmit={handleSubmit}>
         <div>
           title

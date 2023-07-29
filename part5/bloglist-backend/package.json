@@ -1,0 +1,39 @@
+{
+  "name": "phonebook_backend",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "build:ui": "rm -rf dist && cd ../phonebook_frontend && npm run build && cp -r dist ../phonebook_backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild",
+    "lint": "eslint .",
+    "prettier": "prettier -w . '!dist'"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.3.2",
+    "mongoose-unique-validator": "^4.0.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "jest": "^29.6.1",
+    "nodemon": "^3.0.1",
+    "prettier": "^2.8.7",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "prettier": {
+    "singleQuote": true
+  }
+}

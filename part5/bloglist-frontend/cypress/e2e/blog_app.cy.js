@@ -64,6 +64,13 @@ describe('Blog app', function () {
         cy.get('@theBlog').contains('button', 'like').click();
         cy.get('@theBlog').contains(`likes ${blogData.likes + 1}`);
       });
+
+      it('it can be removed by the creator', function () {
+        cy.contains(blogData.title).parent().as('theBlog');
+        cy.get('@theBlog').contains('button', 'view').click();
+        cy.get('@theBlog').contains('button', 'delete').click();
+        cy.contains(blogData.title).should('not.exist');
+      });
     });
   });
 });

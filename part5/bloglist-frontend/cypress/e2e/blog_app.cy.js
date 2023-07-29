@@ -8,6 +8,7 @@ const blogData = {
   title: 'Build a Blog using Next.JS and DEV.to',
   author: 'Martin Paucot',
   url: 'https://dev.to/martinp/build-a-blog-using-nextjs-and-devto-15a5',
+  likes: 7,
 };
 
 describe('Blog app', function () {
@@ -50,6 +51,19 @@ describe('Blog app', function () {
       cy.get('input[name="Url"]').type(blogData.url);
       cy.contains('button', 'create').click();
       cy.contains(blogData.title);
+    });
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog(blogData);
+      });
+
+      it('it can be liked', function () {
+        cy.contains(blogData.title).parent().as('theBlog');
+        cy.get('@theBlog').contains('button', 'view').click();
+        cy.get('@theBlog').contains('button', 'like').click();
+        cy.get('@theBlog').contains(`likes ${blogData.likes + 1}`);
+      });
     });
   });
 });

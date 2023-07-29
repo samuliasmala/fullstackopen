@@ -16,7 +16,7 @@ const Blog = ({ blog, increaseLikes, isOwnBlog, deleteBlog }) => {
   const deleteBtnStyle = { backgroundColor: 'red', color: 'white' };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <div>
         {blog.title} {blog.author}{' '}
         {isOpen ? (

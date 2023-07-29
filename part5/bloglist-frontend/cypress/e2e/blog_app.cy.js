@@ -93,5 +93,21 @@ describe('Blog app', function () {
         cy.get('@theBlog').contains('button', 'delete').should('not.exist');
       });
     });
+
+    it('blogs are sorted by likes', function () {
+      // Create blogs with different likes
+      cy.createBlog({ ...blogData, title: 'Blog1', likes: 7 });
+      cy.createBlog({ ...blogData, title: 'Blog2', likes: 0 });
+      cy.createBlog({ ...blogData, title: 'Blog3', likes: 21 });
+      cy.createBlog({ ...blogData, title: 'Blog4', likes: 3 });
+      cy.createBlog({ ...blogData, title: 'Blog5', likes: 128 });
+
+      // Verify blogs are sorted by likes
+      cy.get('.blog').eq(0).contains('Blog5'); // likes: 128
+      cy.get('.blog').eq(1).contains('Blog3'); // likes: 21
+      cy.get('.blog').eq(2).contains('Blog1'); // likes: 7
+      cy.get('.blog').eq(3).contains('Blog4'); // likes: 3
+      cy.get('.blog').eq(4).contains('Blog2'); // likes: 0
+    });
   });
 });

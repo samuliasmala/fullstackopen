@@ -71,6 +71,27 @@ describe('Blog app', function () {
         cy.get('@theBlog').contains('button', 'delete').click();
         cy.contains(blogData.title).should('not.exist');
       });
+
+      it('delete button only seen by the creator', function () {
+        // delete button visible for the creator
+        cy.contains(blogData.title).parent().as('theBlog');
+        cy.get('@theBlog').contains('button', 'view').click();
+        cy.get('@theBlog').contains('button', 'delete');
+
+        // delete button not visible for other users
+        const anotherUserData = {
+          username: 'test2',
+          name: 'Test User2',
+          password: 'longpassword2',
+        };
+        cy.request('POST', `${Cypress.env('BACKEND')}/users`, anotherUserData);
+        const { username, password } = anotherUserData;
+        cy.login({ username, password });
+
+        cy.contains(blogData.title).parent().as('theBlog');
+        cy.get('@theBlog').contains('button', 'view').click();
+        cy.get('@theBlog').contains('button', 'delete').should('not.exist');
+      });
     });
   });
 });

@@ -15,12 +15,16 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
+    "cypress": "^12.17.2",
+    "eslint-plugin-cypress": "^2.13.3",
     "eslint-plugin-jest": "^27.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "cypress:open": "cypress open",
+    "test:e2e": "cypress run",
     "prettier": "prettier -w . '!build'",
     "eject": "react-scripts eject",
     "eslint": "eslint ."

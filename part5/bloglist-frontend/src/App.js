@@ -96,7 +96,7 @@ const App = () => {
             blog={blog}
             increaseLikes={increaseLikes}
             deleteBlog={deleteBlog}
-            isOwnBlog={user.username === blog.user.username}
+            isOwnBlog={user.username === blog.user?.username}
           />
         ))}
     </div>

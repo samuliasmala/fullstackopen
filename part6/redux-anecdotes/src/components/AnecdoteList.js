@@ -15,8 +15,7 @@ export const AnecdoteList = () => {
 
   const handleVote = (anecdote) => {
     dispatch(voteAnecdote(anecdote.id));
-    dispatch(setNotification(`you voted '${anecdote.content}'`));
-    setTimeout(() => dispatch(setNotification('')), 5000);
+    dispatch(setNotification(`you voted '${anecdote.content}'`, 5));
   };
 
   return anecdotes

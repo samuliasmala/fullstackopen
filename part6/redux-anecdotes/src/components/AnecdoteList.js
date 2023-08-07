@@ -4,7 +4,7 @@ import { voteAnecdote } from '../reducers/anecdoteReducer';
 export const AnecdoteList = () => {
   const anecdotes = useSelector((state) =>
     !state.filter
-      ? state.anecdotes
+      ? [...state.anecdotes]
       : state.anecdotes.filter((anecdote) =>
           anecdote.content.includes(state.filter),
         ),
